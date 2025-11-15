@@ -3,10 +3,10 @@ import { Edit, Trash2 } from 'lucide-react';
 
 const imageError = "https://placehold.co/400x600/6b21a8/ffffff?text=Portada+No+Disponible";
 
-export default function GameCard({ game, onEdit, onDelete, onDetail }) {
+export default function GameCard({ game, onEdit, onDelete, onDetail, setPage }) {
   return (
     <div
-      onClick={onDetail}
+      onClick={() => { onDetail(); setPage('detail'); }}
       className="bg-white rounded-xl shadow-lg overflow-hidden transition-transform duration-300 hover:scale-[1.02] border border-gray-100 cursor-pointer"
     >
       <div className="relative h-48">

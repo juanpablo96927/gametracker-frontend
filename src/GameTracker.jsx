@@ -1,4 +1,4 @@
-// src/App.jsx
+// src/App.jsx (CORREGIDO)
 import { useState } from 'react';
 import { useAuth } from './hooks/useAuth';
 import { useGames } from './hooks/useGames';
@@ -10,19 +10,30 @@ import AuthForm from './components/auth/AuthForm';
 
 function App() {
   const { user, login, register, logout } = useAuth();
-  const { games, filters, setFilters, pagination, setPagination, fetchGames, addGame, updateGame, deleteGame } = useGames(user?.token);
+  // La desestructuración aquí es correcta:
+  const { games, filters, setFilters, pagination, setPagination, fetchGames, addGame, updateGame, deleteGame, addReview } = useGames(user?.token);
   const [page, setPage] = useState('home');
   const [selectedGameId, setSelectedGameId] = useState(null);
 
   const renderPage = () => {
     switch (page) {
-      case 'login': return <AuthForm type="login" onSubmit={login} />;
-      case 'register': return <AuthForm type="register" onSubmit={register} />;
+    case 'login': return <AuthForm type="login" onSubmit={login} setPage={setPage} />;
+      case 'register': return <AuthForm type="register" onSubmit={register} setPage={setPage} />;
       case 'add': return <GameForm onSubmit={addGame} onCancel={() => setPage('home')} />;
       case 'edit':
         const game = games.find(g => g._id === selectedGameId);
         return <GameForm game={game} onSubmit={(data) => updateGame(selectedGameId, data)} onCancel={() => setPage('home')} />;
-      case 'detail': return <GameDetail gameId={selectedGameId} onBack={() => setPage('home')} />;
+      
+      // ✅ CASO 'detail' ÚNICO Y CORREGIDO
+      case 'detail': 
+        return (
+          <GameDetail 
+            gameId={selectedGameId} 
+            onBack={() => setPage('home')} 
+            addReview={addReview} // <-- Ahora solo se ejecuta este bloque
+          />
+        );
+      
       default:
         return (
           <GameList
@@ -43,7 +54,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header user={user} onLogout={logout} setPage={setPage} />
+      <Header user={user} logout={logout} setPage={setPage} />
       <main className="container mx-auto p-4">
         {renderPage()}
       </main>

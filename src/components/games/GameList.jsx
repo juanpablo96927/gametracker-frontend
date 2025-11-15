@@ -1,4 +1,4 @@
- // src/components/games/GameList.jsx
+// src/components/games/GameList.jsx (Código FINAL y Corregido)
 import GameCard from './GameCard';
 import GameFilters from './GameFilters';
 import { Loader } from 'lucide-react';
@@ -15,13 +15,14 @@ export default function GameList({
   onEdit,
   onDelete,
   onDetail,
+  setPage, // <--- setPage ha sido restaurado aquí
 }) {
   const totalPages = Math.ceil(pagination.total / pagination.limit);
   const currentPage = Math.floor(pagination.skip / pagination.limit) + 1;
 
   const goToPage = (page) => {
     const newSkip = (page - 1) * pagination.limit;
-    if (newSkip >= 0 && newSkip < pagination.total) {
+    if (newSkip >= 0 && newSkip < pagination.total) { 
       setPagination(prev => ({ ...prev, skip: newSkip }));
     }
   };
@@ -61,6 +62,7 @@ export default function GameList({
         </div>
       )}
 
+      {/* Único bloque de renderizado con la lista y paginación */}
       {!loading && games.length > 0 && (
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -71,6 +73,7 @@ export default function GameList({
                 onEdit={() => onEdit(game._id)}
                 onDelete={() => onDelete(game._id)}
                 onDetail={() => onDetail(game._id)}
+                setPage={setPage} // <--- RESTAURADO para que funcione la navegación en GameCard
               />
             ))}
           </div>
