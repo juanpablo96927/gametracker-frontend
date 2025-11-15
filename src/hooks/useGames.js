@@ -114,8 +114,11 @@ const addGame = async (data) => {
     }
   };
 
-  const deleteGame = async (id) => {
+ const deleteGame = async (id) => {
+  
     if (!confirm("¿Eliminar este juego?")) return;
+    
+    setLoading(true); 
     try {
       const res = await fetch(`${API_BASE_URL}/${id}`, {
         method: 'DELETE',
@@ -123,11 +126,17 @@ const addGame = async (data) => {
       });
       
       if (!res.ok) {
-         // No necesitamos parsear el JSON si solo esperamos un estado 204 No Content
+         // Si el servidor devuelve 401 o 403, este error se capturará
          throw new Error(`Fallo al eliminar: ${res.statusText}`);
       }
+      
+   
+      setGames(prevGames => prevGames.filter(game => game._id !== id));
+      
     } catch (err) {
       setError(err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
